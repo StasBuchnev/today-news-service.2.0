@@ -1,12 +1,14 @@
 package com.stas.rest.service.todaynewsservice.connectservice.data;
 
-import lombok.*;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@Builder
-public class Response {
-    private Content content;
+@Getter
+@Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class Response<T> {
+    private T content;
     private String status;
-    private String errorMassage;
-
+    private String errorMessage;
 }

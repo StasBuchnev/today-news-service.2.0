@@ -1,0 +1,4 @@
+rest:
+  exchange-service:
+    url: https://openexchangerates.org/api/latest.json/?app_id={app_id}&prettyprint={prettyprint}&show_alternative={show_alternative}
+    token: f905cf40434c4a068fef91d1d52acfa6

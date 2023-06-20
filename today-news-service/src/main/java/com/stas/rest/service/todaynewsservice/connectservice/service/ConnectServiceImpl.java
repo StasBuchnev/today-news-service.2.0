@@ -1,36 +1,40 @@
 package com.stas.rest.service.todaynewsservice.connectservice.service;
 
-import com.stas.rest.service.todaynewsservice.connectservice.data.Content;
-import com.stas.rest.service.todaynewsservice.connectservice.data.Request;
+import com.stas.rest.service.todaynewsservice.connectservice.data.ContentExchangeInfo;
 import com.stas.rest.service.todaynewsservice.connectservice.data.Response;
-import com.stas.rest.service.todaynewsservice.connectservice.data.WeatherInfo;
 import com.stas.rest.service.todaynewsservice.currencyrestservice.CurrencyRestService;
-import com.stas.rest.service.todaynewsservice.currencyrestservice.data.Currency;
-import com.stas.rest.service.todaynewsservice.weatherrestservice.WeatherRestService;
-import com.stas.rest.service.todaynewsservice.weatherrestservice.data.Weather;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class ConnectServiceImpl implements ConnectService {
-    private final WeatherRestService weatherRestService;
+
     private final CurrencyRestService currencyRestService;
 
     @Override
+    public Response<ContentExchangeInfo> getExchangeInfoByCurrency(String currency) {
 
-    public Response getInfo(Request request) {
-        Currency currency = null;
-        Weather weather = null;
-        if (Boolean.TRUE.equals(request.getCurrencyInfo())) {
-            currency = currencyRestService.getCurrency();
-        }
-        if (Boolean.TRUE.equals(request.getWeatherInfo())) {
-            weather = weatherRestService.getWeather();
-        }
+        var exchangeFullInfo = currencyRestService.getExchangeInfo();
 
-        Content content = new Content();
-        content.setCurrencyInfo(Converter.getCurrencyInfo(currency));
-        return Response.builder().content(content).status("ok").build();
+        var response = new Response<ContentExchangeInfo>();
+
+        if (exchangeFullInfo.getResponseStatus().is2xxSuccessful()) {
+
+            var rate = exchangeFullInfo.getRates().get(currency);
+
+            ContentExchangeInfo content = ContentExchangeInfo.builder()
+                    .baseCurrency(exchangeFullInfo.getBaseCurrency())
+                    .requestedCurrency(currency)
+                    .rate(rate).build();
+
+            response.setContent(content);
+            response.setStatus("OK");
+
+        } else {
+            response.setStatus("Error");
+            response.setErrorMessage(exchangeFullInfo.getErrorMessage());
+        }
+        return response;
     }
 }
