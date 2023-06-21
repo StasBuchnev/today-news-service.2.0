@@ -2,6 +2,7 @@ package com.stas.rest.service.todaynewsservice.connectservice.service;
 
 import com.stas.rest.service.todaynewsservice.connectservice.data.ContentExchangeInfo;
 import com.stas.rest.service.todaynewsservice.connectservice.data.Response;
+import com.stas.rest.service.todaynewsservice.connectservice.utils.Const;
 import com.stas.rest.service.todaynewsservice.currencyrestservice.CurrencyRestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -29,10 +30,10 @@ public class ConnectServiceImpl implements ConnectService {
                     .rate(rate).build();
 
             response.setContent(content);
-            response.setStatus("OK");
+            response.setStatus(Const.STATUS_OK);
 
         } else {
-            response.setStatus("Error");
+            response.setStatus(Const.STATUS_ERROR);
             response.setErrorMessage(exchangeFullInfo.getErrorMessage());
         }
         return response;
